@@ -1,0 +1,70 @@
+\documentclass[12pt,a4paper]{ctexart}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage[demo]{graphicx}
+\usepackage{amsmath}
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\title{AI 声明位置错误的反例}
+\author{}
+\begin{document}
+\maketitle
+\clearpage
+\begin{abstract}
+本样例用于验证：声明文书若被放到文献表之后是否会被判为位置错误。
+摘要与关键词在此仅作占位。关键词：占位。
+\end{abstract}
+\newpage
+
+\section{问题重述}
+占位内容。
+\section{问题分析}
+占位内容。
+\section{模型假设}
+数据真实有效。
+\section{符号说明}
+符号约定如表 \ref{tab:s} 所示。
+\begin{table}[htbp]
+\centering
+\caption{符号说明}
+\label{tab:s}
+\begin{tabular}{ll}
+\toprule
+符号 & 含义 \\
+\midrule
+$x$ & 决策变量 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\section{模型的建立与求解}
+目标函数见式 \eqref{eq:o}。
+\begin{equation}
+\min Z = \sum_{i} c_i x_i
+\label{eq:o}
+\end{equation}
+\section{结果分析}
+占位内容。
+\section{模型检验}
+\subsection{误差分析}
+占位内容。
+\subsection{灵敏度分析}
+占位内容。
+\subsection{稳健性分析}
+占位内容。
+\section{模型的优缺点与改进}
+占位内容。
+\section{结论}
+占位内容。
+
+\begin{thebibliography}{9}
+\bibitem{ref1} 作者. 题名[J]. 刊名, 2020.
+\end{thebibliography}
+
+% ★★ 故意把 AI 声明放在参考文献之后 —— 这正是本反例要测的错误写法 ★★
+\section*{AI 工具使用声明}
+本参赛队在竞赛过程中使用了 AI 工具，主要用于语言润色，详细使用情况见支撑材料。
+文中引用见 \cite{ref1}。
+
+\appendix
+\section{附录}
+本论文没有用到程序。
+\end{document}

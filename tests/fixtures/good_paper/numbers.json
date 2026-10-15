@@ -1,0 +1,48 @@
+{
+  "_meta": {
+    "description": "论文中所有数值的唯一事实源。",
+    "updated": "2026-09-06T14:20:00"
+  },
+  "q1.total_cost": {
+    "value": 1284500.0,
+    "display": "1284500 元",
+    "source": "code/q1.py",
+    "note": "最优总成本"
+  },
+  "q1.init_cost": {
+    "value": 980000.0,
+    "display": "980000",
+    "source": "code/q1.py",
+    "note": "初始方案成本"
+  },
+  "q1.cost_share_opt": {
+    "value": 45.2,
+    "display": "45.2",
+    "source": "code/q1.py",
+    "note": "优化方案成本占比（%）"
+  },
+  "q1.cost_share_init": {
+    "value": 34.5,
+    "display": "34.5",
+    "source": "code/q1.py",
+    "note": "初始方案成本占比（%）"
+  },
+  "q2.mean_rel_error": {
+    "value": 0.047,
+    "display": "4.7%",
+    "source": "code/q2.py",
+    "note": "平均相对误差"
+  },
+  "q2.iterations": {
+    "value": 3500,
+    "display": "3500 次",
+    "source": "code/q2.py",
+    "note": "迭代次数"
+  },
+  "q3.saving_ratio": {
+    "value": 0.238,
+    "display": "23.8%",
+    "source": "code/q3.py",
+    "note": "节约里程比例"
+  }
+}

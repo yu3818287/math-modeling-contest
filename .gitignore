@@ -1,0 +1,48 @@
+# ---- LaTeX 编译产物 ----
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+*.nav
+*.snm
+*.vrb
+*.xdv
+*.upa
+*.upb
+*.bcf
+*.run.xml
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# ---- 建模工作产出（这些是使用者自己的成果，不应提交到本仓库）----
+# 如果你的 skill 使用目录就在本仓库内，取消下面注释
+# code/
+# results/
+# figures/
+# data/
+# paper/
+
+# ---- 编辑器与系统 ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- 临时目录 ----
+_compiletest/
+tmp/
+temp/

@@ -1,0 +1,119 @@
+\documentclass[12pt,a4paper]{ctexart}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+% 用 \graphicspath 声明图片搜索目录（校验器需要能识别这种写法）
+\graphicspath{{figures/}}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\title{基于贪心算法的物流配送路径优化研究}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+\clearpage
+
+\begin{abstract}
+针对物流配送路径优化问题，本文以总配送成本最小为目标建立整数规划模型，
+并设计节约里程贪心算法求解。以赛题附件给出的配送网络为算例，
+求解得到最优总成本 1284500 元，较初始方案节约里程比例 23.8\%。
+对模型进行误差分析，预测值与实测值的平均相对误差为 4.7\%；
+改变车辆载重约束进行灵敏度分析，结果波动在可接受范围内。
+算法迭代 3500 次后收敛。
+\end{abstract}
+
+\noindent\textbf{关键词：} 路径优化；贪心算法；灵敏度分析
+
+\section{问题重述}
+本文需要解决物流配送中的路径规划任务，包括初始方案构造、路径改进与结果检验。
+
+\section{问题分析}
+该问题的本质是带容量约束的车辆路径问题。由于节点规模有限，
+精确算法求解代价高，而贪心类启发式能在可接受时间内给出高质量可行解，
+因此选择节约里程法作为主模型。
+
+\section{模型假设}
+数据真实有效；不考虑突发干扰因素；车辆匀速行驶且能耗与距离成正比。
+
+\section{符号说明}
+主要符号的含义与单位如表 \ref{tab:notation} 所示。
+\begin{table}[htbp]
+\centering
+\caption{主要符号说明}
+\label{tab:notation}
+\begin{tabular}{lll}
+\toprule
+符号 & 含义 & 单位 \\
+\midrule
+$c_i$ & 第 $i$ 条路径的配送成本 & 元 \\
+$x_i$ & 第 $i$ 条路径是否启用 & 0-1 变量 \\
+$Z$ & 总配送成本 & 元 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{模型的建立与求解}
+以总成本最小为目标建立模型。设参数 $k$，目标函数如式 \eqref{eq:obj} 所示。
+\begin{equation}
+\min Z = \sum_{i} c_i x_i
+\label{eq:obj}
+\end{equation}
+采用节约里程法迭代求解，得到最优总成本 1284500 元，节约里程比例 23.8\%。
+
+\begin{table}[htbp]
+\centering
+\caption{各方案成本对比}
+\label{tab:cost}
+\begin{tabular}{lrr}
+\toprule
+方案 & 成本（元） & 占比（\%） \\
+\midrule
+初始方案 & 980000 & 34.5 \\
+优化方案 & 1284500 & 45.2 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+表 \ref{tab:cost} 给出了两个方案的成本对比。
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{fig_cost_trend.png}
+\caption{迭代过程中总成本的变化趋势}
+\label{fig:cost_trend}
+\end{figure}
+
+图 \ref{fig:cost_trend} 显示算法迭代 3500 次后收敛。
+
+\section{结果分析}
+优化方案在总成本上高于初始方案，主要原因是优化方案覆盖了更多配送节点。
+
+\section{模型检验}
+\subsection{误差分析}
+预测值与实测值的平均相对误差为 4.7\%，处于可接受范围。
+\subsection{灵敏度分析}
+将车辆载重约束上下调整，重新求解，总成本变化幅度较小。
+\subsection{稳健性分析}
+对配送需求加入随机扰动后重复求解，结果排序保持一致。
+
+\section{模型的优缺点与改进}
+优点是与问题结构贴合、计算简便。缺点是未考虑多时段动态需求，
+后续可引入滚动时域方法改进。
+
+\section{结论}
+本文模型给出的配送方案总成本为 1284500 元，节约里程比例 23.8\%。
+
+\section*{AI 工具使用声明}
+本参赛队在竞赛过程中使用了 AI 工具，主要用于语言润色，详细使用情况见支撑材料。
+
+\begin{thebibliography}{9}
+\bibitem{ref1} 张三. 物流配送路径优化研究[J]. 系统工程学报, 2020.
+\bibitem{ref2} DeepSeek, DeepSeek-V3, 深度求索（DeepSeek）, 2026-09-06.
+\end{thebibliography}
+
+\appendix
+\section{附录：支撑材料文件列表与源代码}
+支撑材料包含 code/q1.py 等源程序。文中引用见 \cite{ref1} 与 \cite{ref2}。
+
+\end{document}

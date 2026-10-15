@@ -1,0 +1,199 @@
+# =============================================================================
+# mm.mplstyle -- matplotlib style for mathematical-modeling contest papers
+# -----------------------------------------------------------------------------
+# TWO TRAPS this file is written to avoid. Both fail SILENTLY.
+#
+# TRAP 1 -- encoding.
+#   matplotlib reads .mplstyle files with locale.getpreferredencoding(), which is
+#   GBK/cp936 on a Chinese Windows. Non-ASCII bytes here raise UnicodeDecodeError
+#   at plt.style.use() time. Keep this file pure ASCII: the Chinese rationale for
+#   every setting lives in scripts/README.md, which matplotlib never parses.
+#
+# TRAP 2 -- '#' starts a comment ANYWHERE on the line, even inside a quoted
+#   string. So "color: #0072B2" is silently dropped and matplotlib prints
+#   "Bad value ... does not look like a color arg" to stderr while keeping the
+#   default. ALL colours below are therefore written as float triples
+#   (r, g, b in 0..1), with the hex value in a trailing comment for reference.
+#   mmfig.use_style() captures that stderr and warns if anything was dropped.
+#
+# Usage (the only recommended path, see scripts/mmfig.py):
+#     import sys; sys.path.insert(0, "scripts")
+#     import mmfig; mmfig.use_style()
+#
+# plt.style.use("assets/mm.mplstyle") also works, but two things will be missing:
+#   1) the colour cycle -- matplotlib's .mplstyle parser cannot parse
+#      axes.prop_cycle either; that line is dropped the same silent way.
+#      mmfig.use_style() installs the cycle from Python.
+#   2) CJK font fallback plus its warning, probed and written by use_style().
+#
+# Rules this file implements:
+#   R1 legends live to the RIGHT of the axes, never overlapping, never clipped
+#      -> mmfig.legend_right()
+#   R2 no title inside the figure (the LaTeX \caption owns the title)
+#      -> no title keys here; mmfig.save() warns if one is left behind
+#   R3 no 2x2 panel grid, no 4-in-1 collages -> mmfig.save() raises
+#   R4 font size must match figure size -> figsize *is* the printed size, so a
+#      10pt label stays 10pt after \includegraphics
+#   R5 no pale tints, 3-4 colours total, still readable in greyscale
+#   R6 figure data must match the paper's numbers -> read data from results/,
+#      mmfig.save(data=...) writes a .data.json sidecar for auditing
+#   R7 besides data plots, schematic diagrams are needed -> mmfig.flow_diagram
+#      and mmfig.derivation_diagram
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Canvas and resolution
+# -----------------------------------------------------------------------------
+# 6.3in x 3.9in: an A4 page with 2.5cm margins has a 16cm (= 6.3in) text column.
+# Setting figsize to the FINAL PRINTED size is what makes R4 hold: fonts are
+# specified for that size and LaTeX never scales the image, so 10pt is 10pt.
+# For a half-column figure call mmfig.figsize(0.5) to shrink the canvas to
+# 3.15in instead of scaling a 6.3in image down by half (which would render the
+# text at an effective 5pt -- exactly the "big figure, tiny text" failure).
+figure.figsize: 6.3, 3.9
+figure.dpi: 110
+figure.facecolor: white
+figure.edgecolor: white
+figure.autolayout: False
+figure.constrained_layout.use: False
+
+# -----------------------------------------------------------------------------
+# Export
+# -----------------------------------------------------------------------------
+savefig.dpi: 300
+savefig.bbox: tight
+savefig.pad_inches: 0.02
+savefig.facecolor: white
+savefig.edgecolor: white
+savefig.transparent: False
+# Type 42 embeds TrueType glyphs: pdflatex/xelatex accept it and the text stays
+# selectable/searchable. Avoid Type 3 -- some submission checkers reject PDFs
+# with non-embedded or Type 3 fonts.
+pdf.fonttype: 42
+ps.fonttype: 42
+# svg.fonttype: none keeps text as <text> instead of converting it to paths, so
+# CJK stays editable in LaTeX (\includesvg) and Illustrator. Switch to 'path'
+# when the compiling machine has no CJK font installed.
+svg.fonttype: none
+
+# -----------------------------------------------------------------------------
+# Fonts and sizes
+# -----------------------------------------------------------------------------
+font.family: sans-serif
+# CJK candidates, ordered by glyph quality/bold availability. use_style() probes
+# real glyph coverage (Han characters + U+2212) and promotes the first working
+# family. Note SimHei/SimSun/DengXian have NO U+2212 minus sign, only the ASCII
+# hyphen, which is why axes.unicode_minus must follow the probed font.
+font.sans-serif: Microsoft YaHei, SimHei, Noto Sans SC, Source Han Sans SC, Source Han Sans CN, WenQuanYi Zen Hei, Microsoft JhengHei, SimSun, KaiTi, FangSong, DengXian, DejaVu Sans
+font.size: 10
+axes.labelsize: 10.5
+axes.titlesize: 11
+xtick.labelsize: 9.5
+ytick.labelsize: 9.5
+legend.fontsize: 9.5
+figure.titlesize: 11
+# Safe default: ASCII hyphen as the minus sign, every CJK font can draw it.
+# use_style() flips this back to True when the probed font really has U+2212.
+axes.unicode_minus: False
+# Math goes through mathtext's own fonts, independent of the CJK family.
+# Discipline: never put CJK text inside $...$; mathtext cannot render it.
+mathtext.fontset: dejavusans
+mathtext.default: it
+
+# -----------------------------------------------------------------------------
+# Colours
+# -----------------------------------------------------------------------------
+# The palette itself cannot live here: axes.prop_cycle is unparseable in a
+# .mplstyle file, and the four hex values would be eaten by TRAP 2 anyway.
+# mmfig.use_style() installs it from Python:
+#     ['#0072B2', '#D55E00', '#009E73', '#3D3D3D']
+# Those four values also live in mmfig.COLORS / mmfig.palette(), the single
+# source of truth. Continuous quantities use the 'mm_seq' colormap that mmfig
+# registers (dark blue -> orange, monotonically increasing lightness, no pale end).
+
+# -----------------------------------------------------------------------------
+# Axes, ticks, grid
+# -----------------------------------------------------------------------------
+axes.linewidth: 0.9
+axes.edgecolor: 0.2, 0.2, 0.2              # #333333
+axes.labelcolor: 0.1333, 0.1333, 0.1333    # #222222
+axes.axisbelow: True
+axes.grid: True
+axes.grid.axis: both
+axes.grid.which: major
+axes.spines.top: True
+axes.spines.right: True
+axes.spines.left: True
+axes.spines.bottom: True
+axes.formatter.limits: -3, 4
+axes.formatter.use_mathtext: False
+axes.labelpad: 4.0
+
+# Grid must be faint enough not to fight the data: light grey, hairline, below.
+grid.color: 0.8627, 0.8627, 0.8627         # #DCDCDC
+grid.linewidth: 0.6
+grid.linestyle: -
+grid.alpha: 1.0
+
+xtick.direction: in
+ytick.direction: in
+xtick.top: False
+ytick.right: False
+xtick.major.size: 3.5
+ytick.major.size: 3.5
+xtick.major.width: 0.9
+ytick.major.width: 0.9
+xtick.minor.visible: False
+ytick.minor.visible: False
+xtick.color: 0.2, 0.2, 0.2                 # #333333
+ytick.color: 0.2, 0.2, 0.2                 # #333333
+
+# -----------------------------------------------------------------------------
+# Lines and markers
+# -----------------------------------------------------------------------------
+# Widths are tuned for a 6.3in canvas at 300dpi: thinner looks washed out,
+# heavier looks clumsy. Marker shape and line style cycle alongside colour so
+# curves stay distinguishable in greyscale print.
+lines.linewidth: 1.6
+lines.markersize: 5.0
+lines.solid_capstyle: round
+lines.solid_joinstyle: round
+lines.dash_capstyle: round
+
+# -----------------------------------------------------------------------------
+# Legend
+# -----------------------------------------------------------------------------
+# Position is set by mmfig.legend_right() via bbox_to_anchor, outside the axes
+# on the right. These keys only fix the look: white background, thin grey frame,
+# tight padding.
+legend.loc: center left
+legend.frameon: True
+legend.framealpha: 1.0
+legend.facecolor: white
+legend.edgecolor: 0.6902, 0.6902, 0.6902   # #B0B0B0
+legend.fancybox: False
+legend.shadow: False
+legend.borderpad: 0.45
+legend.labelspacing: 0.42
+legend.handlelength: 1.9
+legend.handleheight: 0.9
+legend.handletextpad: 0.6
+legend.borderaxespad: 0.0
+legend.columnspacing: 1.2
+legend.markerscale: 1.0
+
+# -----------------------------------------------------------------------------
+# Bars, error bars, images
+# -----------------------------------------------------------------------------
+# NOTE: there is no errorbar.linewidth rcParam in matplotlib 3.5; the error bar
+# line width is passed explicitly by mmfig.errorbar_plot(). Do not add it back,
+# an unknown key makes matplotlib print "Bad key" and (in some versions) abort
+# loading the whole style file.
+patch.linewidth: 0.8
+patch.edgecolor: 0.1686, 0.1686, 0.1686    # #2B2B2B
+patch.force_edgecolor: False
+patch.antialiased: True
+errorbar.capsize: 3.0
+image.aspect: auto
+image.interpolation: nearest
+image.origin: upper

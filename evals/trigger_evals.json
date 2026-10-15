@@ -1,0 +1,22 @@
+[
+  {"query": "我们队准备参加今年的国赛，我负责写论文。想问下正文页数到底是多少页以内啊？还有要不要放目录？", "should_trigger": true},
+  {"query": "帮我看下这篇论文能不能提交了，我怕格式有问题被扣分。文件在 paper/main.tex", "should_trigger": true},
+  {"query": "这是我们市赛的A题和数据，帮我做出来，要能提交的完整论文，按国赛格式来", "should_trigger": true},
+  {"query": "美赛快开始了，D题是环境政策类的，我们打算用系统动力学。帮我理一下论文该怎么组织结构，摘要注意什么", "should_trigger": true},
+  {"query": "我用遗传算法算出来最优成本是 1284500，但是我论文里前面写的是 128.45 万，现在想统一一下，有什么办法保证后面不再对不上", "should_trigger": true},
+  {"query": "数模论文里的灵敏度分析和误差分析到底要怎么做？我们老师说这是加分项，但是我不太清楚具体要写什么", "should_trigger": true},
+  {"query": "去年国赛的论文我们被扣分了，说附录代码运行结果和论文不符。今年想避免这个问题，有什么规范的做法吗", "should_trigger": true},
+  {"query": "help me write the MCM summary sheet, we're doing problem C this year and our model is a random forest plus a linear program", "should_trigger": true},
+  {"query": "数学建模比赛用 AI 会不会被判违规啊？我们队想用大模型帮忙写代码", "should_trigger": true},
+  {"query": "我用 matplotlib 画的图，老师说要图例放右边不要压住线，颜色别太浅，有没有现成的样式文件可以直接用", "should_trigger": true},
+  {"query": "帮我用 Python 算一下这个线性规划问题的最优解，目标函数是 min 3x+2y，约束是 x+y>=10, x<=8, y<=7", "should_trigger": false},
+  {"query": "我们课题组要投一篇论文到 IEEE Access，是关于强化学习的，帮我写个 introduction 的初稿", "should_trigger": false},
+  {"query": "解释一下什么是蒙特卡洛模拟，用简单的话说", "should_trigger": false},
+  {"query": "帮我做一个 Excel 表格，统计一下我们班 40 个同学的期末成绩分布，画个直方图", "should_trigger": false},
+  {"query": "我有一篇已经发表的期刊论文 PDF，帮我提取里面的参考文献列表，导出成 bib 格式", "should_trigger": false},
+  {"query": "用 LaTeX 帮我排版一份简历，要两页以内，风格简洁一点", "should_trigger": false},
+  {"query": "数学建模协会要办一个宣讲会，帮我写个活动策划书", "should_trigger": false},
+  {"query": "帮我看看这段 Python 代码为什么报 KeyError，数据是从 csv 读进来的", "should_trigger": false},
+  {"query": "我们学校要开一门数学建模选修课，帮我设计一下 16 周的教学大纲", "should_trigger": false},
+  {"query": "把这个 Word 文档转成 PDF，格式不要变", "should_trigger": false}
+]

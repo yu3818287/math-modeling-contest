@@ -1,0 +1,24 @@
+# 统一换行符：仓库内存 LF，检出时按平台自动转换。
+# 不加这个文件的话，Windows 上提交会把 LF 转成 CRLF 存进仓库，
+# 之后 Linux/macOS 的贡献者一改动就会显示"整个文件都变了"。
+* text=auto
+
+# 二进制文件不要做换行符转换，否则文件会被损坏
+*.png binary
+*.jpg binary
+*.pdf binary
+*.zip binary
+*.pyc binary
+
+# 文本类文件明确指定，便于 diff 与语法高亮识别
+*.py   text
+*.md   text
+*.json text
+*.tex  text
+*.yml  text
+*.mplstyle text
+
+# GitHub 语言统计：把 LaTeX 模板排除在语言占比之外，
+# 否则仓库会被标成 "TeX" 而不是 "Python"
+assets/latex/** linguist-vendored
+tests/fixtures/**/*.tex linguist-vendored

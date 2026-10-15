@@ -1,0 +1,741 @@
+% !TEX program = xelatex
+% =============================================================================
+%  全国大学生数学建模竞赛（CUMCM，国赛）论文 LaTeX 模板
+% -----------------------------------------------------------------------------
+%  编译方式（必须用 XeLaTeX，因为要调用系统中文字体）：
+%      xelatex main.tex
+%      xelatex main.tex        % 跑两遍以解析 \ref / \eqref 交叉引用
+%  或：  latexmk -xelatex main.tex
+%
+%  !! 重要声明 !!
+%  本模板注释中给出的页数、摘要字数、页边距等口径，依据的是
+%  《全国大学生数学建模竞赛论文格式规范（2026 年修订稿）》。
+%  该规范每年都可能修订，正式参赛前必须以当年官方发布的通知与规范原文为准。
+%  官方发布渠道：全国大学生数学建模竞赛官网 http://www.mcm.edu.cn
+% =============================================================================
+%
+%  --------------------------------- 官方硬性规范速查 ---------------------------------
+%  （依据《全国大学生数学建模竞赛论文格式规范（2026 年修订稿）》，供本模板注释引用）
+%
+%   第一条  A4 纸，上下左右各留出至少 2.5 厘米的页边距，从左侧装订。
+%   第二条  论文第一页为承诺书，第二页为编号专用页。
+%   第三条  论文第三页为摘要专用页。摘要内容（含标题和关键词）原则上不能超过一页；
+%           论文从摘要页开始编写页码，页码位于页脚中部，用阿拉伯数字从"1"开始连续编号。
+%   第四条  论文从第四页开始是正文内容（不要目录，不超过 30 页）；正文之后是论文附录（页数不限）。
+%   第五条  附录内容应包括支撑材料的文件列表、建模所用到的全部完整、可运行的源程序代码。
+%           缺少必要的源程序、程序不能运行或运行结果与论文不符，都可能被取消评奖资格。
+%   第六条  摘要专用页、正文和附录中任何地方都不能有显示参赛者身份和所在学校及赛区的信息。
+%
+%  关于"摘要 800-1000 字"：这是历年参赛队伍总结出的**经验值，并非官方规定**。
+%  官方只规定"摘要内容（含标题和关键词）原则上不能超过一页"。
+%  本模板摘要占位文本约 850 汉字，仅为排版示范，请按你的实际工作量增删。
+% =============================================================================
+
+\documentclass[12pt,a4paper]{ctexart}
+% 说明：ctexart 适合本文这种"无章（chapter）、只有节（section）"的期刊式论文。
+%       若你的论文需要 \chapter 分章，可换成 \documentclass[12pt,a4paper]{ctexrep}。
+%       中文字体：ctex 会按操作系统自动选择字体集
+%         Windows -> 宋体/黑体/楷体/仿宋
+%         macOS   -> 华文宋体/华文黑体 等
+%         Linux   -> Fandol 字体
+%       如需强制指定，可写 fontset=windows / fontset=macnew / fontset=fandol，
+%       例如 \documentclass[12pt,a4paper,fontset=windows]{ctexart}
+
+% ------------------------------ 页面设置（官方第一条） ------------------------------
+% 上下左右各留出"至少 2.5 厘米"的页边距。这里取 2.5cm（= 官方下限，不要再调小）；
+% 若学校打印机会裁边，可放心改成 2.6cm / 2.8cm 等更大值，仍然合规。
+\usepackage[top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm]{geometry}
+\setlength{\marginparwidth}{0pt}
+
+% ---------------------------------- 数学与表格 ----------------------------------
+\usepackage{amsmath,amssymb,amsthm}   % 公式环境、\eqref、定理环境
+\usepackage{bm}                       % 粗体数学符号 \bm{}
+\usepackage{booktabs}                 % ★ 三线表：\toprule \midrule \bottomrule
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{makecell}                 % 表头换行 \makecell{}
+\usepackage{siunitx}                  % 单位与数值对齐（可选，如不用可删）
+\sisetup{detect-all=true}
+
+% ---------------------------------- 图形与浮动体 ---------------------------------
+\usepackage{graphicx}
+\usepackage{float}                    % 提供 [H] 强制定位
+\usepackage{caption}
+\captionsetup{
+  font        = small,
+  labelsep    = quad,                 % 中文习惯："图 1  标题"（编号与标题间留空）
+  justification = centering,
+  skip        = 6pt,
+}
+% 图题在图下方、表题在表上方 —— 靠 \caption 的书写位置控制，见正文示例。
+% 注意：\caption 必须写在 \label 之前，否则 \ref 会取到上一张图/表的编号。
+
+% ---------------------------------- 代码与附录 ----------------------------------
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+  basicstyle       = \ttfamily\footnotesize,
+  keywordstyle     = \color[RGB]{0,0,180}\bfseries,
+  commentstyle     = \color[RGB]{0,128,0}\itshape,
+  stringstyle      = \color[RGB]{170,0,0},
+  numbers          = left,
+  numberstyle      = \tiny\color{gray},
+  numbersep        = 8pt,
+  frame            = single,
+  framexleftmargin = 6pt,
+  breaklines       = true,
+  showstringspaces = false,
+  tabsize          = 4,
+  columns          = flexible,
+  % listings 与 xeCJK 混排时，代码里若含中文容易出现断行/字距异常；
+  % 本模板的示例代码全部为 ASCII（含中文注释的代码请自行确认编译无误）。
+  extendedchars    = true,
+}
+\lstdefinestyle{python}{
+  language = Python,
+  morekeywords = {as,with,lambda,None,True,False,self},
+}
+\lstdefinestyle{matlab}{
+  language = Matlab,
+  morekeywords = {end,function,zeros,ones,linprog,intlinprog,optimoptions},
+}
+% 若代码中有中文注释，可取消下面两行注释以改善断行：
+% \usepackage{fontspec}
+% \XeTeXlinebreaklocale "zh"
+
+% ------------------------------- 页眉页脚与页码（官方第三条） -------------------------------
+% 页码：位于页脚中部，阿拉伯数字，从摘要页开始以"1"起连续编号。
+% 实现方式：承诺书页与编号专用页用 \thispagestyle{empty} 关闭页码；
+%           摘要页之前用 \pagenumbering{arabic} 把页码计数器重置为 1。
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}                            % 清空默认的页眉页脚
+\fancyfoot[C]{\thepage}               % ★ 页码居中显示在页脚
+\renewcommand{\headrulewidth}{0pt}    % 不画页眉横线
+\renewcommand{\footrulewidth}{0pt}
+% 让 plain 样式（部分环境会强制使用）也保持"仅页脚居中页码"
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}%
+  \renewcommand{\headrulewidth}{0pt}\renewcommand{\footrulewidth}{0pt}}
+
+% ------------------------------- 正文排版：行距、缩进、标题 -------------------------------
+\usepackage{indentfirst}              % 每节第一段也首行缩进
+
+\linespread{1.5}                      % ★ 约 1.5 倍行距（国赛正文常用 1.5 倍）
+\setlength{\parindent}{2em}           % ★ 段落首行缩进两字（12pt 下 1em = 1 个汉字宽）
+\setlength{\parskip}{0pt}             % 段间不加额外空隙，靠缩进区分段落
+
+% 章节标题：一、问题重述 / （一）子标题
+\ctexset{
+  section = {
+    name      = {,、},                 % 编号后缀顿号：一、
+    number    = \chinese{section},     % 中文数字编号
+    format    = \zihao{4}\bfseries\centering,
+    aftername = {},
+    beforeskip = 12pt plus 4pt minus 2pt,
+    afterskip  = 10pt plus 2pt minus 2pt,
+  },
+  subsection = {
+    name      = {（,）},
+    number    = \chinese{subsection},
+    format    = \zihao{-4}\bfseries,
+    aftername = {},
+    beforeskip = 10pt plus 3pt minus 2pt,
+    afterskip  = 8pt plus 2pt minus 2pt,
+  },
+  subsubsection = {
+    format    = \zihao{-4}\bfseries,
+    aftername = {},
+  },
+}
+
+% ---------------------------------- 超链接（可删） ----------------------------------
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  bookmarksnumbered = false,
+  pdftitle  = {CUMCM Paper},
+  pdfauthor = {},                     % ★ 官方第六条：不要填写任何身份信息
+}
+% 让 PDF 书签能正确生成中文标题（\chinese 在 PDF 字符串中不可展开）
+\pdfstringdefDisableCommands{\def\chinese#1{}}
+
+% ---------------------------------- 常用自定义命令 ---------------------------------
+% \teamplaceholder{内容}：一行内联的下划线填空（用于日期、队员姓名等行内位置）
+\newcommand{\teamplaceholder}[1]{\underline{\hspace{2.5cm}\makebox[0pt][c]{\small #1}\hspace{2.5cm}}}
+% \teamfield{说明文字}{填写内容}：说明文字单独一行、下划线填空另起一行的表单条目
+% （避免"说明文字 + 5cm 下划线"挤在同一行造成 Overfull \hbox 警告）
+\newcommand{\teamfield}[2]{%
+  \par\noindent #1\par\nobreak\vspace{2pt}%
+  \noindent\teamplaceholder{#2}\par\vspace{6pt}}
+\newcommand{\keywords}[1]{\vspace{6pt}\noindent{\bfseries 关键词：}#1}
+
+% =============================================================================
+\begin{document}
+
+% =============================================================================
+% 第 1 页：承诺书（官方第二条）—— 不显示页码
+% -----------------------------------------------------------------------------
+% ★ 替换说明：本页内容为通用占位文本。正式参赛时，请直接使用竞赛官网当年发布的
+%   《承诺书》原件（通常提供 Word/PDF 版本），或把下面 6 处的 \teamfield 占位符
+%   替换成你的真实信息（只改 \teamfield 的**第二个参数**即可）：
+%     1) 参赛题号        \teamfield{我们参赛选择的题号是……}{A / B / C / D / E}
+%     2) 报名参赛队号    \teamfield{我们的报名参赛队号为……}{12 位数字队号}
+%     3) 所属学校全名    \teamfield{所属学校……}{学校全名}
+%     4) 参赛队员姓名    \teamfield{参赛队员……}{队员 1 \quad 队员 2 \quad 队员 3}
+%     5) 指导教师姓名    \teamfield{指导教师……}{指导教师}
+%     6) 日期            \teamplaceholder{年}、\teamplaceholder{月}、\teamplaceholder{日}
+%   ★ 若某条信息你不想保留（例如不需要指导教师栏），直接删掉对应的整行即可。
+%   ★ 身份信息只允许出现在本页（承诺书）与第 2 页的编号专用页上；
+%     摘要页、正文、附录中一律不得出现（官方第六条）。
+% =============================================================================
+\thispagestyle{empty}                 % 本页不编页码
+
+\begin{center}
+  {\zihao{2}\bfseries 全国大学生数学建模竞赛}\\[10pt]
+  {\zihao{3}\bfseries 承\quad 诺\quad 书}
+\end{center}
+
+\vspace{10pt}
+
+\begingroup
+\linespread{1.35}\selectfont
+\zihao{-4}
+
+我们仔细阅读了《全国大学生数学建模竞赛章程》和《全国大学生数学建模竞赛参赛规则》（以下简称“竞赛章程和参赛规则”，可从 \url{http://www.mcm.edu.cn} 下载），我们完全清楚，在竞赛开始后参赛队员不能以任何方式（包括电话、电子邮件、网上咨询等）与队外的任何人（包括指导教师）研究、讨论与赛题有关的问题。
+
+我们知道，抄袭别人的成果是违反竞赛章程和参赛规则的，如果引用别人的成果或其他公开的资料（包括网上查到的资料），必须按照规定的参考文献的表述方式在正文引用处和参考文献中明确列出。
+
+我们郑重承诺，严格遵守竞赛章程和参赛规则，以保证竞赛的公正、公平性。如有违反竞赛章程和参赛规则的行为，我们将受到严肃处理。
+
+我们授权全国大学生数学建模竞赛组委会，可将我们的论文以任何形式进行公开展示（包括进行网上公示，在书籍、期刊和其他媒体进行正式或非正式发表等）。
+
+\vspace{10pt}
+% ★ 以下 6 处 \teamfield{说明}{占位内容} 就是需要你替换的队伍信息。
+%   第一个参数是提示文字，第二个参数是要填的真实内容。
+\teamfield{我们参赛选择的题号是（从 A / B / C / D / E 中选择一项填写）：}{A / B / C / D / E}
+
+\teamfield{我们的报名参赛队号为（12 位数字组成的队号）：}{12 位数字队号}
+
+\teamfield{所属学校（请填写完整的全名）：}{学校全名}
+
+\teamfield{参赛队员（打印并签名）：}{队员 1 \quad 队员 2 \quad 队员 3}
+
+\teamfield{指导教师或指导教师组负责人（打印并签名）：}{指导教师}
+
+\vspace{10pt}
+\begin{flushright}
+  日期：\teamplaceholder{年}\ \teamplaceholder{月}\ \teamplaceholder{日}
+\end{flushright}
+\endgroup
+
+\newpage
+
+% =============================================================================
+% 第 2 页：编号专用页（官方第二条）—— 不显示页码
+% -----------------------------------------------------------------------------
+% 本页由赛区/全国组委会在评阅前填写编号，参赛队不要填写任何内容，
+% 更不要在本页之外（摘要页、正文、附录）泄露队伍身份信息。
+% =============================================================================
+\thispagestyle{empty}                 % 本页不编页码
+
+\begin{center}
+  {\zihao{2}\bfseries 全国大学生数学建模竞赛}\\[10pt]
+  {\zihao{3}\bfseries 编\quad 号\quad 专\quad 用\quad 页}
+\end{center}
+
+\vspace{28pt}
+
+\noindent{\zihao{-4}\bfseries 赛区评阅编号（由赛区组委会评阅前进行编号）：}
+\vspace{6pt}
+
+\noindent\framebox[\textwidth]{\rule{0pt}{2.2cm}}
+
+\vspace{40pt}
+
+\noindent{\zihao{-4}\bfseries 全国评阅编号（由全国组委会评阅前进行编号）：}
+\vspace{6pt}
+
+\noindent\framebox[\textwidth]{\rule{0pt}{2.2cm}}
+
+\vspace{40pt}
+\begin{center}
+  \zihao{5}\itshape （本页不编页码；页码从下一页"摘要专用页"开始，从 1 起连续编号）
+\end{center}
+
+\newpage
+
+% =============================================================================
+% 第 3 页：摘要专用页（官方第三条）—— ★ 页码 1，★ 必须单独一页且摘要正文不跨页
+% -----------------------------------------------------------------------------
+%  ★★ 硬性约束（官方第三条）★★
+%    1) 摘要专用页必须单独占一页；
+%    2) 摘要内容（含标题和关键词）原则上不能超过一页，即"不跨页"；
+%    3) 页码从本页开始，阿拉伯数字，从"1"开始连续编号，位于页脚中部。
+%  ★ 关于字数：官方并未规定字数。"800-1000 字"是民间经验值，非官方规定。
+%    下面的占位摘要约 850 汉字，只是为了让排版看起来接近真实篇幅。
+%  ★ 若你的摘要超出一页，按优先级依次尝试：
+%    (a) 精简摘要文字（最推荐，摘要本来就该凝练）；
+%    (b) 把本页的 \linespread{1.3} 调到 1.25 或 1.2；
+%    (c) 去掉摘要中的空行分段（改为连续段落）。
+%  ★ 本页行距（1.3）比正文（1.5）略紧，就是为了给"不跨页"这条硬性约束留出余量。
+%    在 12pt、A4、2.5cm 页边距下，本页约占 34 行，页面正文区上限约 36 行，
+%    也就是说大约还剩 1.5 行的余量 —— 请勿再往摘要里加太多内容。
+%  ★ 官方第六条：本页（含标题、关键词）不得出现参赛者姓名、学校、赛区等信息。
+% =============================================================================
+
+% ★★ 关键一步：本行把页码计数器重置为 1，并从本页开始改用阿拉伯数字。★★
+%    对 LaTeX 的 \pagenumbering{arabic}：它会把 page 计数器置为 1。
+%    因此必须紧跟在前一页的 \newpage 之后调用，本页（摘要专用页）才会显示"1"，
+%    后续正文页依次显示 2、3……（编译后请自行核对页脚数字）。
+\pagenumbering{arabic}
+
+\begingroup
+\linespread{1.3}\selectfont           % 摘要页单独收紧行距，确保"不跨页"（正文仍为 1.5）
+
+% ------------------------------ 论文标题（占位） ------------------------------
+\begin{center}
+  {\zihao{3}\bfseries
+   基于混合整数规划与鲁棒优化的\\[4pt]
+   XX 问题建模与决策方案}             % ★ 替换为你的论文标题
+\end{center}
+
+\vspace{8pt}
+
+% ------------------------------ 摘要正文（约 850 汉字占位） ------------------------------
+\begin{center}
+  {\zihao{4}\bfseries 摘\quad 要}
+\end{center}
+
+\vspace{4pt}
+\zihao{-4}
+
+本文针对 XX 优化决策问题，以“数据预处理—机理建模—优化求解—检验评价”为主线，综合运用相关性分析、混合整数规划、启发式算法与不确定性量化等方法，建立了一套完整、可复现的数学模型体系，并给出了具有可操作性的定量决策方案。全文计算均以 Python 3.11 实现，随机种子固定，结果可完全复现。
+
+针对问题一，首先对附件数据进行清洗与异常值剔除，利用箱线图与 $3\sigma$ 准则识别异常点，并采用线性插值补齐缺失数据。在此基础上，通过 Pearson 与 Spearman 相关系数矩阵筛选出与目标量显著相关的主控因素，构建多元线性回归与随机森林的对比模型。结果表明，随机森林的十折交叉验证决定系数达到 0.93，显著优于线性回归的 0.71，故选取随机森林作为问题一的预测模型。特征重要性排序显示，温度与历史负荷合计贡献了 68\% 的解释力，与机理分析结论一致；模型在独立测试集上的平均绝对百分比误差为 4.7\%，满足工程精度要求。
+
+针对问题二，将决策问题抽象为带资源约束的混合整数非线性规划模型，以总成本最小为目标函数，以产能上限、库存平衡、需求满足与逻辑互斥为约束条件，共设 0-1 变量 180 个、连续变量 96 个。考虑到问题规模与非线性耦合，本文设计了两阶段求解策略：先用拉格朗日松弛获得下界，再以自适应大邻域搜索算法逼近上界。算法在 1200 次迭代后收敛，最优目标值为 $2.417\times10^{6}$ 元，较贪心策略降低 18.6\%。为验证解的质量，本文将松弛下界与启发式上界的相对间隙控制在 2.3\% 以内，求解耗时约 47 分钟。
+
+针对问题三，引入需求与价格的不确定性，构建两阶段鲁棒优化模型，以盒式不确定集刻画参数波动，通过强对偶理论将内层最大最小问题转化为可求解的线性形式。求解得到的方案在需求波动 $\pm 15\%$ 的情形下，期望成本仅上升 4.2\%，且所有情景均无约束违约。进一步对比随机规划与鲁棒优化两种框架可以发现，前者期望成本略低但对极端情景的防护不足，后者以 1.8\% 的额外成本换取了约束的严格满足，更适合风险厌恶型决策者。
+
+最后，本文从误差、灵敏度与稳健性三个层面对模型进行检验：残差分析显示误差近似服从均值为 0.03、标准差为 0.87 的正态分布；单因素灵敏度分析表明目标值对单位运输成本最为敏感，弹性系数为 1.34；蒙特卡洛模拟一万次的结果显示，最优解在 95\% 置信水平下的相对波动不超过 6.8\%。本文模型的特色在于将机理约束与数据驱动方法有机融合，并借助鲁棒优化显式刻画不确定性，所提框架对同类资源配置问题具有较好的推广价值。
+
+% ------------------------------ 关键词 ------------------------------
+\keywords{混合整数规划；鲁棒优化；自适应大邻域搜索；灵敏度分析；蒙特卡洛模拟}
+% ★ 关键词替换为你的 3-6 个关键词，用中文分号"；"分隔
+
+\endgroup
+
+\newpage
+
+% =============================================================================
+% 第 4 页起：正文（官方第四条）
+% -----------------------------------------------------------------------------
+%  ★ 官方第四条：论文从第四页开始是正文内容（不要目录，不超过 30 页）。
+%    - 本模板**不包含目录**（\tableofcontents），因为官方规范明确要求"不要目录"。
+%      请勿自行加回目录页，否则会挤占正文页数并可能被判不合规。
+%    - 正文（从本页到"参考文献"之前）合计不超过 30 页。
+%    - 正文之后是附录，附录页数不限（附录的写法见文末）。
+%  ★ 官方第六条：正文中任何地方都不得出现参赛者姓名、学校、赛区信息。
+%    包括：页眉页脚、图表标题、代码注释、数据文件路径、致谢等。
+% =============================================================================
+
+\section{问题重述}
+\label{sec:restate}
+
+\subsection{问题背景}
+
+在此处概述题目的实际背景：该问题来自哪个行业或场景、为什么要研究它、现实意义何在。
+建议 200--400 字，只讲"是什么、为什么"，不要在这里讲你怎么做。
+
+\subsection{问题提出}
+
+依次列出题目要求解决的各个子问题，建议用 \texttt{enumerate} 环境逐条列出，
+保证与后文"问题分析""模型建立与求解"的编号一一对应。
+
+\begin{enumerate}
+  \item 问题一：在此处用一两句话概括问题一的目标与已知条件。
+  \item 问题二：在此处用一两句话概括问题二的目标与已知条件。
+  \item 问题三：在此处用一两句话概括问题三的目标与已知条件。
+\end{enumerate}
+
+\section{问题分析}
+\label{sec:analysis}
+
+针对问题一，说明你打算从哪个角度切入、需要用到哪些数据、准备建立什么类型的模型，
+以及选择该模型的理由（例如：目标量与自变量之间存在非线性关系，故不宜用线性回归）。
+
+针对问题二，说明决策变量、目标函数与约束条件的来源，说明问题的规模与难点
+（如 NP 难、非线性耦合、维数灾难），并交代你打算用精确算法还是启发式算法。
+
+针对问题三，说明不确定性的来源与刻画方式，说明为何选择随机规划、鲁棒优化或
+灵敏度分析中的某一种，并比较其优劣。
+
+各子问题之间的逻辑关系（如问题二的模型是问题一模型的推广）也应在此说明。
+
+\section{模型假设}
+\label{sec:assumptions}
+
+\begin{enumerate}
+  \item 假设附件所给数据真实可靠，不存在系统性记录偏差；
+  \item 假设在研究时间尺度内，各外部参数（价格、需求分布等）不发生结构性突变；
+  \item 假设所有决策变量取值连续（或整数），且不受除文中约束以外的其他限制；
+  \item 假设运输/处理时间与距离成正比，忽略路况等随机因素；
+  \item 假设……（每条假设都应说明其在后续建模中的作用）。
+\end{enumerate}
+
+\section{符号说明}
+\label{sec:notation}
+
+% ★ 表题在上方：\caption 写在 tabular 之前；\label 紧跟 \caption 之后。
+% ★ 三线表：只用 \toprule \midrule \bottomrule 三条横线，禁止使用竖线 "|"。
+%   不要用 \hline，也不要在 tabular 的列格式里写 |c|c|。
+% ★ 同一结果不要同时用表格和图片呈现：能用三线表讲清的，就不要再多画一张图；
+%   只有在需要展示趋势/分布/空间结构时才用图。图表重复表达同一结论会显得冗余。
+% ★ 图表编号自动连续（表 1、表 2 ……；图 1、图 2 ……），正文必须用 \ref 引用。
+\begin{table}[htbp]
+  \centering
+  \caption{符号说明}
+  \label{tab:notation}
+  \begin{tabular}{cll}
+    \toprule
+    \textbf{符号} & \textbf{含义} & \textbf{单位 / 取值} \\
+    \midrule
+    $i,\ j$        & 供应点 / 需求点编号                & ---            \\
+    $t$            & 时段编号                           & ---            \\
+    $x_{ijt}$      & $t$ 时段从 $i$ 到 $j$ 的运输量     & 吨             \\
+    $y_{it}$       & 供应点 $i$ 在 $t$ 时段是否启用（0-1 变量） & ---      \\
+    $c_{ij}$       & 单位运输成本                       & 元/吨          \\
+    $d_{jt}$       & $t$ 时段需求点 $j$ 的需求量        & 吨             \\
+    $S_i$          & 供应点 $i$ 的最大产能              & 吨             \\
+    $\alpha$       & 需求不确定集的波动幅度             & 0.15           \\
+    $T$            & 规划期总时段数                     & 12             \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+表~\ref{tab:notation} 给出了全文通用的符号约定，后续各章不再重复定义。
+
+\section{模型建立与求解}
+\label{sec:model}
+
+\subsection{模型的建立}
+
+以决策变量 $x_{ijt}$ 与 $y_{it}$ 为基础，建立如式~\eqref{eq:objective} 所示的
+目标函数，即在满足全部需求的前提下最小化总成本：
+% ★ 公式用 equation 环境：自动居中、自动在右侧编号，编号连续（1)(2)(3)…
+% ★ 引用公式用 \eqref{eq:xxx}（会带括号）或 \ref{eq:xxx}（不带括号）。
+\begin{equation}
+  \min\ Z=\sum_{i=1}^{m}\sum_{j=1}^{n}\sum_{t=1}^{T} c_{ij}\,x_{ijt}
+            +\sum_{i=1}^{m}\sum_{t=1}^{T} f_i\,y_{it}
+  \label{eq:objective}
+\end{equation}
+其中 $f_i$ 为供应点 $i$ 的固定启用成本。式~\eqref{eq:objective} 的第一项为变动
+运输成本，第二项为固定启用成本。
+
+约束条件如式~\eqref{eq:con1}--\eqref{eq:con3} 所示：
+\begin{equation}
+  \sum_{i=1}^{m} x_{ijt} = d_{jt}, \qquad \forall j,\ t
+  \label{eq:con1}
+\end{equation}
+\begin{equation}
+  \sum_{j=1}^{n} x_{ijt} \le S_i\,y_{it}, \qquad \forall i,\ t
+  \label{eq:con2}
+\end{equation}
+\begin{equation}
+  y_{it}\in\{0,1\},\qquad x_{ijt}\ge 0
+  \label{eq:con3}
+\end{equation}
+
+式~\eqref{eq:con1} 为需求满足约束，式~\eqref{eq:con2} 为产能约束，
+式~\eqref{eq:con3} 为变量的取值约束。
+
+若需要多行对齐的推导，可使用 \texttt{align} 环境：
+\begin{align}
+  \mathcal{L}(x,y,\lambda,\mu)
+    &= \sum_{i,j,t} c_{ij}x_{ijt} + \sum_{i,t} f_i y_{it}
+       + \sum_{j,t}\lambda_{jt}\Bigl(d_{jt}-\sum_i x_{ijt}\Bigr) \notag \\
+    &\quad + \sum_{i,t}\mu_{it}\Bigl(\sum_j x_{ijt}-S_i y_{it}\Bigr)
+  \label{eq:lagrange}
+\end{align}
+
+\subsection{模型的求解}
+
+说明求解算法与实现细节：算法流程、参数设置、迭代次数、收敛判据、
+编程语言与运行环境。给出算法伪代码或流程说明。
+
+\subsection{求解结果}
+
+% ★ 图题在图的下方：先插图，再写 \caption；\label 紧跟 \caption 之后。
+% ★ 图与表不要重复呈现同一结果：下表已给出各时段最优成本，
+%   就不要再用柱状图把同一组数据画一遍。
+\begin{figure}[htbp]
+  \centering
+  % ==== 插入真实图片时，把下面这行占位框替换为： ====
+  % ==== \includegraphics[width=0.75\linewidth]{figures/convergence.pdf} ====
+  \framebox[0.75\linewidth]{\rule{0pt}{5cm}\makebox[0pt][c]{\small 此处插入图片（占位框）}}
+  \caption{自适应大邻域搜索算法的收敛曲线}
+  \label{fig:convergence}
+\end{figure}
+
+由图~\ref{fig:convergence} 可见，算法在约 1200 次迭代后目标值趋于稳定，
+相对间隙小于 $0.5\%$，说明算法已收敛。
+
+\begin{table}[htbp]
+  \centering
+  \caption{各时段最优成本与需求满足率}
+  \label{tab:result}
+  \begin{tabular}{cccc}
+    \toprule
+    \textbf{时段} & \textbf{最优成本 / 元} & \textbf{需求满足率 / \%} & \textbf{启用供应点数} \\
+    \midrule
+    1  & $1.83\times10^{5}$ & 100.0 & 3 \\
+    2  & $1.96\times10^{5}$ & 100.0 & 3 \\
+    3  & $2.11\times10^{5}$ & 100.0 & 4 \\
+    \textbf{合计} & $\bm{2.417\times10^{6}}$ & 100.0 & --- \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+表~\ref{tab:result} 列出了各时段的最优成本。可以看出，随着需求上升，
+被启用的供应点数量由 3 个增加到 4 个，符合规模经济的一般规律。
+
+\section{模型检验}
+\label{sec:validation}
+
+本节从误差分析、灵敏度分析与稳健性分析三个层面检验模型的可靠性。
+
+\subsection{误差分析}
+
+给出模型预测值与真实值之间的误差指标（MAE、RMSE、MAPE 等），
+给出残差图或误差分布，并解释误差来源（数据噪声、模型结构性偏差、数值误差）。
+可用式~\eqref{eq:rmse} 定义均方根误差：
+\begin{equation}
+  \mathrm{RMSE}=\sqrt{\frac{1}{N}\sum_{k=1}^{N}\bigl(\hat{y}_k-y_k\bigr)^2}
+  \label{eq:rmse}
+\end{equation}
+
+\subsection{灵敏度分析}
+
+对关键参数逐一扰动 $\pm 5\%$、$\pm 10\%$、$\pm 15\%$，观察目标值的变化幅度，
+找出最敏感参数。建议用三线表给出弹性系数，而不要用复杂图形。
+
+\begin{table}[htbp]
+  \centering
+  \caption{关键参数的灵敏度（目标值相对变化率 / \%）}
+  \label{tab:sensitivity}
+  \begin{tabular}{lccc}
+    \toprule
+    \textbf{参数} & \textbf{$-10\%$} & \textbf{基准} & \textbf{$+10\%$} \\
+    \midrule
+    单位运输成本 $c_{ij}$ & $-11.7$ & $0.00$ & $+12.9$ \\
+    需求量 $d_{jt}$       & $-8.4$  & $0.00$ & $+9.1$  \\
+    产能上限 $S_i$        & $+0.6$  & $0.00$ & $-0.3$  \\
+    不确定幅度 $\alpha$   & $+2.2$  & $0.00$ & $+3.8$  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+由表~\ref{tab:sensitivity} 可知，目标值对单位运输成本最为敏感（弹性系数约 1.34），
+对产能上限最不敏感，说明在现实中应优先压缩运输成本。
+
+\subsection{稳健性分析}
+
+通过蒙特卡洛模拟、情景分析或对模型结构做扰动，检验结论是否稳定。
+给出模拟次数、抽样分布、置信区间以及约束违约概率。
+
+\section{模型的优缺点与改进}
+\label{sec:proscons}
+
+\subsection{模型的优点}
+
+\begin{enumerate}
+  \item 模型将机理约束与数据驱动方法结合，兼顾可解释性与预测精度；
+  \item 采用两阶段求解策略，在可接受时间内得到高质量可行解；
+  \item 用鲁棒优化显式处理不确定性，结论不依赖于单一情景假设。
+\end{enumerate}
+
+\subsection{模型的缺点}
+
+\begin{enumerate}
+  \item 未考虑……因素，在极端情景下可能低估风险；
+  \item 启发式算法只能保证近似最优，缺乏最优性证书；
+  \item 数据粒度较粗，模型参数估计存在一定不确定性。
+\end{enumerate}
+
+\subsection{模型的改进方向}
+
+针对上述不足，可从以下方向改进：引入随机对偶动态规划处理多阶段决策；
+用列生成或分支定价获得更紧的下界；引入机器学习方法在线更新参数估计。
+
+% =============================================================================
+% 参考文献
+% -----------------------------------------------------------------------------
+% ★ 正文中必须用 \cite{} 引用，且正文引用处与文献表必须一一对应。
+%   官方规范要求"引用别人的成果必须按规定方式在正文引用处和参考文献中明确列出"。
+% ★ 建议按正文出现顺序编号（thebibliography 默认即按书写顺序编号）。
+% =============================================================================
+\newpage
+% ★ 本模板按官方规范"不要目录"，因此没有 \tableofcontents，
+%   也不需要 \addcontentsline 之类的目录条目写入。
+\section*{参考文献}
+
+\begin{thebibliography}{99}
+  \bibitem{ref1} 姜启源, 谢金星, 叶俊. 数学模型[M]. 5 版. 北京: 高等教育出版社, 2018.
+  \bibitem{ref2} 司守奎, 孙玺菁. 数学建模算法与应用[M]. 3 版. 北京: 国防工业出版社, 2021.
+  \bibitem{ref3} Birge J R, Louveaux F. Introduction to Stochastic Programming[M].
+                 2nd ed. New York: Springer, 2011.
+  \bibitem{ref4} Ben-Tal A, El Ghaoui L, Nemirovski A. Robust Optimization[M].
+                 Princeton: Princeton University Press, 2009.
+  \bibitem{ref5} Ropke S, Pisinger D. An adaptive large neighborhood search heuristic for the
+                 pickup and delivery problem with time windows[J]. Transportation Science,
+                 2006, 40(4): 455--472.
+\end{thebibliography}
+
+% =============================================================================
+% 附录（官方第五条 + 第四条）
+% -----------------------------------------------------------------------------
+%  ★ 官方第四条：正文之后是论文附录，附录页数不限。
+%  ★ 官方第五条：附录内容应包括
+%       (1) 支撑材料的文件列表；
+%       (2) 建模所用到的全部完整、可运行的源程序代码。
+%    缺少必要的源程序、程序不能运行、或运行结果与论文不符，都可能被取消评奖资格。
+%    → 因此附录里必须放"能直接跑通"的完整代码，不要只放片段或伪代码。
+%  ★ 官方第六条：附录中任何地方都不能出现参赛者姓名、学校、赛区信息。
+%    特别注意：代码里的路径（如 C:\Users\张三\...）、作者注释、数据文件名都可能泄密，
+%    提交前请全文搜索一遍。
+% =============================================================================
+\newpage
+\appendix
+
+\section*{附录 A\quad 支撑材料的文件列表}
+\label{app:files}
+
+本论文的支撑材料共包含 \textbf{XX} 个文件，清单见表~\ref{tab:files}。
+
+% 三线表同样适用于附录的清单表
+\begin{table}[htbp]
+  \centering
+  \caption{支撑材料文件列表}
+  \label{tab:files}
+  \begin{tabular}{lll}
+    \toprule
+    \textbf{文件名} & \textbf{类型} & \textbf{说明} \\
+    \midrule
+    \texttt{main.tex}          & LaTeX 源文件 & 论文正文源码 \\
+    \texttt{q1\_regression.py} & Python 脚本  & 问题一：数据清洗与随机森林回归 \\
+    \texttt{q2\_mip.py}        & Python 脚本  & 问题二：混合整数规划与 ALNS 求解 \\
+    \texttt{q3\_robust.py}     & Python 脚本  & 问题三：两阶段鲁棒优化 \\
+    \texttt{validation.py}     & Python 脚本  & 误差、灵敏度与稳健性分析 \\
+    \texttt{data/}             & 数据目录     & 题目附件与中间结果 \\
+    \texttt{results/}          & 结果目录     & 各问题输出表格与图形 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section*{附录 B\quad 问题一源程序代码}
+\label{app:code1}
+
+% ★ 必须给出"完整、可运行"的代码，不要省略导入语句或关键函数。
+\begin{lstlisting}[style=python,caption={问题一：数据清洗与随机森林回归},label={lst:q1}]
+# -*- coding: utf-8 -*-
+# Question 1: data cleaning + random forest regression
+import numpy as np
+import pandas as pd
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import cross_val_score, KFold
+
+
+def load_and_clean(path):
+    df = pd.read_csv(path)
+    # 3-sigma outlier removal
+    for col in df.select_dtypes(include=[np.number]).columns:
+        mu, sd = df[col].mean(), df[col].std()
+        df = df[(df[col] - mu).abs() <= 3 * sd]
+    # linear interpolation for missing values
+    df = df.interpolate(method="linear").bfill().ffill()
+    return df
+
+
+def main():
+    df = load_and_clean("data/attachment.csv")
+    X = df.drop(columns=["target"]).values
+    y = df["target"].values
+    model = RandomForestRegressor(n_estimators=500, random_state=0)
+    cv = KFold(n_splits=10, shuffle=True, random_state=0)
+    scores = cross_val_score(model, X, y, cv=cv, scoring="r2")
+    print("10-fold CV R2 = %.4f +/- %.4f" % (scores.mean(), scores.std()))
+    model.fit(X, y)
+    np.savetxt("results/q1_pred.csv", model.predict(X), delimiter=",")
+
+
+if __name__ == "__main__":
+    main()
+\end{lstlisting}
+
+\section*{附录 C\quad 问题二源程序代码}
+\label{app:code2}
+
+\begin{lstlisting}[style=python,caption={问题二：混合整数规划与 ALNS 求解},label={lst:q2}]
+# -*- coding: utf-8 -*-
+# Question 2: MIP model + adaptive large neighborhood search
+import numpy as np
+from scipy.optimize import milp, LinearConstraint, Bounds
+
+
+def build_model(cost, demand, capacity, fixed_cost):
+    """Return the MILP data (c, A, b) for the transportation problem."""
+    m, n = capacity.shape
+    c = np.concatenate([cost.ravel(), fixed_cost.ravel()])
+    lb = np.zeros(c.size)
+    ub = np.concatenate([np.full(m * n, np.inf), np.ones(m)])
+    # demand satisfaction: sum_i x_ij = d_j
+    A_eq = np.zeros((n, c.size))
+    for j in range(n):
+        A_eq[j, j::n] = 1.0
+    return c, A_eq, demand, lb, ub
+
+
+def solve(c, A_eq, d, lb, ub):
+    cons = LinearConstraint(A_eq, d, d)
+    res = milp(c=c, constraints=[cons], integrality=np.ones(c.size),
+               bounds=Bounds(lb, ub))
+    return res
+
+
+if __name__ == "__main__":
+    cost = np.array([[1.2, 2.1, 1.8], [2.4, 1.1, 2.0]])
+    demand = np.array([30.0, 45.0, 25.0])
+    capacity = np.array([[60.0, 0.0], [0.0, 70.0]])
+    fixed = np.array([100.0, 120.0])
+    c, A_eq, d, lb, ub = build_model(cost, demand, capacity, fixed)
+    print(solve(c, A_eq, d, lb, ub).fun)
+\end{lstlisting}
+
+\section*{附录 D\quad 问题三源程序代码}
+\label{app:code3}
+
+\begin{lstlisting}[style=python,caption={问题三：两阶段鲁棒优化},label={lst:q3}]
+# -*- coding: utf-8 -*-
+# Question 3: two-stage robust optimization with box uncertainty
+import numpy as np
+
+
+def worst_case(d_nom, alpha, x, c):
+    """Evaluate the worst-case cost over the box uncertainty set."""
+    d_worst = d_nom * (1.0 + alpha * np.sign(x @ c))
+    return float(np.maximum(d_worst - d_nom, 0.0) @ np.abs(c))
+
+
+def monte_carlo(d_nom, alpha, n_samples=10000, seed=42):
+    rng = np.random.default_rng(seed)
+    samples = d_nom[None, :] * (1.0 + rng.uniform(-alpha, alpha,
+                                                   size=(n_samples, d_nom.size)))
+    return samples
+
+
+if __name__ == "__main__":
+    d_nom = np.array([30.0, 45.0, 25.0])
+    print("worst case =", worst_case(d_nom, 0.15, np.ones(3), np.ones(3)))
+    print("samples shape =", monte_carlo(d_nom, 0.15).shape)
+\end{lstlisting}
+
+\end{document}

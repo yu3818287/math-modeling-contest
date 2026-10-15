@@ -1,0 +1,587 @@
+% !TEX program = pdflatex
+% =============================================================================
+%  MCM/ICM（美国大学生数学建模竞赛，美赛）论文 LaTeX 模板
+% -----------------------------------------------------------------------------
+%  编译方式（本模板同时兼容 pdfLaTeX 与 XeLaTeX，二者选一即可）：
+%      pdflatex main.tex
+%      pdflatex main.tex        % 跑两遍以解析 \ref / \pageref / 目录
+%  或：  xelatex  main.tex   （跑两遍）
+%  或：  latexmk -pdf main.tex
+%
+%  !! 重要声明 !!
+%  本模板注释中给出的页数上限、页眉格式、身份信息禁令等口径，依据的是
+%  COMAP 官方竞赛规则页（MCM/ICM Instructions，现行版本，2027 赛季）：
+%      https://www.contest.comap.com/undergraduate/contests/mcm/instructions.html
+%  该规则每年都可能修订（例如"代码计入 25 页"就是 2027 赛季的新规），
+%  正式参赛前必须以**当年官方发布的通知与 Instructions 页面**为准。
+% =============================================================================
+%
+%  ------------------------- 美赛官方硬性规范速查（2027 赛季口径） -------------------------
+%
+%   [页数]  **25 页上限覆盖整个提交文件**，包括 Summary Sheet、Solution、
+%           Reference List、Table of Contents、Notes、Appendices、Code，
+%           以及题目特定的要求（memo / letter / article 等）。
+%           ★ 2027 赛季新规：程序代码也算页数！这与国赛"附录页数不限"完全相反。
+%   [格式]  必须是 Adobe PDF、英文撰写、字体不小于 12 磅。
+%   [页眉]  **每一页的顶部**必须包含队伍控制号和页码，
+%           官方示例格式：  Team # 0000000, Page 6 of 25
+%   [匿名]  **学生、指导教师、学校名称不得出现在任何一页上**；
+%           除控制号外不得含任何身份信息。
+%   [首页]  第 1 页是 Summary Sheet（摘要页）。
+%   [目录]  Table of Contents 是**被鼓励的**，且**计入** 25 页上限。
+%           （注意：这一点与国赛"不要目录"正相反。）
+%   [AI]    Report on Use of AI **附在 25 页正文之后**，该部分**无页数限制、
+%           不计入 25 页**。AI 使用必须透明：正文内联引用 + 参考文献列出
+%           所有用到的 AI 工具。
+%   [提交]  PDF 附件须小于 25MB，文件名用控制号（例如 0000000.pdf）。
+%           **不要把程序、数据等额外文件随论文提交**。
+%
+%  =============================================================================
+%   ★★★ 最容易无意中超页的地方 ★★★
+%   美赛与国赛在附录上的规则**完全相反**：
+%       国赛：附录页数不限，鼓励放完整源代码。
+%       美赛：附录、代码、目录、参考文献**全部计入 25 页**。
+%   因此**不要**在美赛模板里堆砌长篇代码清单或大段数据表。
+%   如果确实需要附代码，请把它压缩到最少，或按当年 Instructions 的说明处理。
+%   正文每加一节之前，先编译一次并数一遍总页数。
+%  =============================================================================
+
+\documentclass[12pt]{article}
+% ★ 字体不小于 12 磅 —— 这里是官方硬性要求，请勿改成 11pt/10pt。
+
+% ------------------------------ 数学宏包（★ 必须放在字体之前） ------------------------------
+% ★★ 踩坑记录（请不要调整这个顺序）★★
+%   amssymb 与 newtxmath 都会定义 \Bbbk、\openbox 等命令。
+%   如果先加载 newtxmath 再加载 amssymb，pdfLaTeX 会直接报错：
+%       ! LaTeX Error: Command `\Bbbk' already defined.
+%       ! LaTeX Error: Command \openbox already defined.
+%   正确做法：**先 amsmath/amssymb/amsthm，后 newtxtext/newtxmath**。
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{bm}                       % 粗体数学符号 \bm{}
+
+% ------------------------------ 字体（Times 系，12pt） ------------------------------
+% newtxtext + newtxmath 是 Times 的现代替代品，字形与数学字体搭配良好。
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+% 备选方案（若 newtx 装不上，任选其一，取消注释即可）：
+% \usepackage{times}      % 仅正文 Times，数学字体不变
+% \usepackage{mathptmx}   % 正文 + 数学均为 Times（较老，但兼容性最好）
+
+% ---------------------------------- 页面与页眉页脚 ----------------------------------
+\usepackage[letterpaper,margin=1in]{geometry}
+% 说明：COMAP 未强制纸张尺寸。美式惯例用 letterpaper；
+%       若你的排版环境默认 A4，可改成 [a4paper,margin=1in]，不影响合规性。
+
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+% ★ 官方要求：每一页顶部必须有 "Team # 控制号, Page X of 25"。
+%   把下面的 0000000 替换成你的真实队伍控制号（7 位数字，COMAP 分配）。
+\newcommand{\MCMTeamID}{0000000}
+
+% ★ 关于 "of 25" 的取舍（重要，请读）：
+%   官方示例格式是 "Team # 0000000, Page 6 of 25"，即分母固定写 25。
+%   本模板**默认写死为 25**，理由：
+%     (a) 与官方示例完全一致，评阅人看到的格式不会意外；
+%     (b) 25 是规则上限，写实际页数（如 18）反而可能被误读为"未达要求"。
+%   如果你更希望显示实际总页数，把下面一行改为 \MCMUseActualPageCounttrue，
+%   它会用 lastpage 的 \pageref{LastPage} 自动取总页数（需要编译两遍）。
+%   ★ 无论用哪种写法，**编译后都必须自己数一遍实际页数**，确认没超过 25 页：
+%       看编译日志里的 "Output written on main.pdf (N pages)."
+%     或命令行执行  pdfinfo main.pdf  （查看 Pages 字段）
+\newif\ifMCMUseActualPageCount
+\MCMUseActualPageCountfalse          % ← 改成 \MCMUseActualPageCounttrue 即显示实际页数
+
+\ifMCMUseActualPageCount
+  \newcommand{\MCMTotalPages}{\pageref{LastPage}}
+\else
+  \newcommand{\MCMTotalPages}{25}
+\fi
+
+\newcommand{\MCMHeaderText}{Team \# \MCMTeamID, Page \thepage\ of \MCMTotalPages}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\MCMHeaderText}        % 居中：Team # 0000000, Page 6 of 25
+\renewcommand{\headrulewidth}{0pt}   % 不画页眉横线（官方未要求，画了也不违规）
+\renewcommand{\footrulewidth}{0pt}
+% 想让控制号靠左、页码靠右？改用下面两行，并注释掉上面的 \fancyhead[C]：
+% \fancyhead[L]{Team \# \MCMTeamID}
+% \fancyhead[R]{Page \thepage\ of \MCMTotalPages}
+
+% \tableofcontents 等环境会强制切到 plain 样式，这里重定义 plain 以保持页眉一致
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyhead[C]{\MCMHeaderText}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+
+% ---------------------------------- 表格 ----------------------------------
+\usepackage{booktabs}                 % ★ 三线表
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{siunitx}
+\sisetup{detect-all=true}
+
+% ---------------------------------- 图形与浮动体 ---------------------------------
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\captionsetup{
+  font          = small,
+  labelsep      = colon,              % 英文习惯："Figure 1: ..."
+  justification = centering,
+  skip          = 6pt,
+}
+% 图题在图下方、表题在表上方，靠 \caption 的书写位置控制。
+% \caption 必须写在 \label 之前，否则 \ref 会取到上一个编号。
+% ★ 同一结果不要同时用表格和图片呈现 —— 二者重复会浪费宝贵的 25 页配额。
+
+% ---------------------------------- 列表与版式 ----------------------------------
+\usepackage{enumitem}
+\setlist{topsep=2pt,itemsep=1pt,parsep=0pt}
+\usepackage{setspace}
+% 美赛不要求特定行距；默认单倍行距最省页数。
+% 若指导老师要求双倍行距，取消下一行注释（但请留意页数会大幅增加）：
+% \doublespacing
+
+\usepackage{indentfirst}
+
+% ---------------------------------- 代码清单（可选） ---------------------------------
+% ★ 警告：在美赛里，附录中的代码**计入 25 页上限**（2027 赛季起明确）。
+%   本模板只保留一个极短的示例，用来演示怎么排版；
+%   正式论文中请谨慎添加，能不放就不放。
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+  basicstyle       = \ttfamily\footnotesize,
+  keywordstyle     = \color[RGB]{0,0,180}\bfseries,
+  commentstyle     = \color[RGB]{0,128,0}\itshape,
+  stringstyle      = \color[RGB]{170,0,0},
+  numbers          = left,
+  numberstyle      = \tiny\color{gray},
+  numbersep        = 8pt,
+  frame            = single,
+  breaklines       = true,
+  showstringspaces = false,
+  tabsize          = 4,
+  columns          = flexible,
+}
+
+% ---------------------------------- 超链接 ----------------------------------
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  bookmarksnumbered = false,
+  pdftitle  = {MCM/ICM Solution Paper},
+  pdfauthor = {Team \MCMTeamID},      % ★ 只能写控制号，不得写姓名/学校
+}
+\renewcommand{\contentsname}{Table of Contents}
+
+% =============================================================================
+\begin{document}
+
+% =============================================================================
+% PAGE 1 — SUMMARY SHEET（官方规定第 1 页就是摘要页，必须单独一页）
+% -----------------------------------------------------------------------------
+%  ★ 本页是评阅人最先、也可能唯一细读的一页，务必把"问题是什么、你用了什么方法、
+%    得到什么结果、结论有什么价值"讲清楚，不要只写背景。
+%  ★ 官方第六条精神：本页不得出现学生姓名、指导教师姓名、学校名称，
+%    只能出现队伍控制号（已由页眉统一给出一遍，正文里不必重复）。
+%  ★ 摘要页是否计入 25 页？计入 —— 它是"整个提交文件"的一部分。
+%  ★ 同样地：不要在这里放致谢、不要写学校名、不要放校徽。
+% =============================================================================
+
+\begin{center}
+  {\large\bfseries
+   Here Goes the Title of Your MCM/ICM Solution Paper}\\[6pt]
+  % ★ 标题替换为你的论文标题。建议具体、可检索，避免"Analysis of a Problem"这类空泛标题。
+  {\normalsize\bfseries Summary}
+\end{center}
+
+\vspace{4pt}
+
+% ---- Summary 正文（占位） ----
+% ★ 建议 350-600 词，占满但不溢出一页。写成 4-6 段，每段一个要点：
+%   段 1：问题背景与我们的总体思路
+%   段 2：模型一 / 问题一的做法与结果（给出**具体数字**）
+%   段 3：模型二 / 问题二的做法与结果
+%   段 4：模型三 / 问题三的做法与结果
+%   段 5：灵敏度与稳健性检验结论
+%   段 6：模型特色与推广价值
+We address the problem of \emph{[state the task in one sentence]}. Our approach combines
+[method A] with [method B] to produce a quantitative, reproducible decision framework.
+Unlike purely descriptive treatments, we couple a mechanistic model with a data-driven
+calibration step, and we explicitly quantify uncertainty rather than reporting a single
+point estimate. The deliverable is a ranked set of operational recommendations together
+with the confidence we attach to each one.
+
+For the first task, we clean the provided data by removing outliers with a $3\sigma$
+rule and imputing missing entries by linear interpolation, then screen candidate
+predictors using Pearson and Spearman correlation matrices. We compare a multiple linear
+regression against a random forest, and select the latter because its ten-fold
+cross-validated coefficient of determination reaches $0.93$, against $0.71$ for the
+linear model. This model supplies the calibrated inputs used in all later sections.
+
+For the second task, we formulate the decision problem as a mixed-integer nonlinear
+program with $180$ binary and $96$ continuous variables, minimizing total cost subject to
+capacity, inventory-balance, demand-satisfaction, and logical-exclusivity constraints.
+Because the problem is NP-hard, we solve it in two stages: a Lagrangian relaxation
+furnishes a lower bound, and an adaptive large neighborhood search drives the upper bound
+downward. The algorithm converges after $1200$ iterations with an optimal objective of
+$2.417\times10^{6}$ CNY, an $18.6\%$ improvement over a greedy baseline.
+
+For the third task, we allow demand and price to vary within a box uncertainty set and
+build a two-stage robust optimization model. Strong duality converts the inner max-min
+problem into a tractable linear program. The resulting plan raises expected cost by only
+$4.2\%$ under $\pm 15\%$ demand perturbation, and no scenario in our test set violates a
+constraint. Because the robust counterpart remains a linear program, it can be solved to
+global optimality with a standard solver rather than a heuristic.
+
+We validate the framework on three levels. Residual analysis shows approximately normal
+errors with mean $0.03$ and standard deviation $0.87$. One-at-a-time sensitivity analysis
+identifies unit transportation cost as the dominant driver, with an elasticity of $1.34$.
+A ten-thousand-sample Monte Carlo study bounds the relative variation of the optimal
+objective at $6.8\%$ with $95\%$ confidence. The principal strength of our approach is
+that it fuses mechanistic constraints with data-driven estimation while representing
+uncertainty explicitly, so the recommendations remain defensible when the inputs shift.
+On the strength of these results we recommend consolidating shipments on the three
+highest-volume arcs and holding one node in reserve; that single change captures most of
+the achievable saving while preserving the robustness margin.
+
+\vspace{6pt}
+\noindent{\bfseries Keywords:} mixed-integer programming; robust optimization; adaptive
+large neighborhood search; sensitivity analysis; Monte Carlo simulation
+
+\newpage
+
+% =============================================================================
+% PAGE 2 — TABLE OF CONTENTS
+% -----------------------------------------------------------------------------
+%  ★ 美赛**鼓励**使用 Table of Contents（与国赛"不要目录"的要求相反）。
+%  ★ 目录页**计入** 25 页上限，所以不要写冗长的三级目录；本模板只用两级。
+%  ★ 目录需要编译两遍才会正确（第一遍显示 ??）。
+% =============================================================================
+\tableofcontents
+% 只想显示到二级标题（更省页数）：
+% \setcounter{tocdepth}{1}
+
+\newpage
+
+% =============================================================================
+% 正文 —— 以下各节均计入 25 页
+% =============================================================================
+
+\section{Introduction}
+\label{sec:intro}
+
+Restate the problem in your own words, then state precisely what you are asked to
+deliver. A useful pattern is three short subsections: background, problem statement, and
+our approach.
+
+\subsection{Background}
+
+Explain why the problem matters and what is already known. Keep this brief: reviewers
+care far more about what you did than about the history of the field.
+
+\subsection{Problem Statement}
+
+Enumerate the required tasks. Keep the numbering identical to the numbering used in
+\S\ref{sec:model} onward, so that a reviewer can always map task to method to result.
+
+\subsection{Our Approach}
+
+Give a one-paragraph roadmap of the paper. Mention the modelling philosophy and the
+solution strategy in plain language before any mathematics appears.
+
+\section{Assumptions and Justifications}
+\label{sec:assumptions}
+
+% ★ 美赛评阅非常看重"假设是否有依据"。每条假设后面都要跟一句理由，
+%   并说明该假设在后续哪些模型/公式中起作用。
+\begin{enumerate}
+  \item \textbf{The supplied data are accurate and free of systematic recording bias.}
+        Justification: the data are the only empirical basis available, and no
+        independent measurement is provided for cross-checking.
+  \item \textbf{External parameters do not undergo structural breaks within the study
+        horizon.} Justification: the horizon is short relative to the observed
+        historical variability of these parameters.
+  \item \textbf{Transportation time is proportional to distance.} Justification:
+        routing is over a highway network where average speed varies little between
+        the arcs considered.
+  \item \textbf{Demand is met in full in every period.} Justification: the problem
+        statement treats unmet demand as infeasible rather than as a penalized
+        shortfall.
+\end{enumerate}
+
+\section{Notations}
+\label{sec:notation}
+
+% ★ 表题在表上方；三线表只用 \toprule \midrule \bottomrule，禁止竖线。
+% ★ 正文必须用 \ref 引用表格（见表 \ref{tab:notation}），不能只放一张孤表。
+Table~\ref{tab:notation} collects the symbols used throughout the paper; symbols not
+listed here are defined where they first appear.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Notation}
+  \label{tab:notation}
+  \begin{tabular}{cll}
+    \toprule
+    \textbf{Symbol} & \textbf{Description} & \textbf{Unit / Range} \\
+    \midrule
+    $i,\ j$          & Index of supply node / demand node          & --- \\
+    $t$              & Index of time period                        & --- \\
+    $x_{ijt}$        & Quantity shipped from $i$ to $j$ in period $t$ & tonne \\
+    $y_{it}$         & Binary: 1 if supply node $i$ is open in $t$ & $\{0,1\}$ \\
+    $c_{ij}$         & Unit transportation cost                    & CNY/tonne \\
+    $d_{jt}$         & Demand at node $j$ in period $t$            & tonne \\
+    $S_i$            & Capacity of supply node $i$                 & tonne \\
+    $\alpha$         & Half-width of the uncertainty set           & $0.15$ \\
+    $T$              & Number of periods in the horizon            & $12$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Model Development}
+\label{sec:model}
+
+\subsection{Model I: Prediction}
+
+State the model, then justify each term. Number every equation that you later refer to.
+Equation~\eqref{eq:objective} gives the objective of the deterministic core model:
+% \eqref 会自动补上括号并生成超链接；\ref 则不带括号。
+\begin{equation}
+  \min\ Z=\sum_{i=1}^{m}\sum_{j=1}^{n}\sum_{t=1}^{T} c_{ij}\,x_{ijt}
+            +\sum_{i=1}^{m}\sum_{t=1}^{T} f_i\,y_{it}
+  \label{eq:objective}
+\end{equation}
+where $f_i$ is the fixed opening cost of supply node $i$. The first sum is variable
+transportation cost and the second is fixed opening cost.
+
+The constraints are:
+\begin{equation}
+  \sum_{i=1}^{m} x_{ijt} = d_{jt}, \qquad \forall j,\ t
+  \label{eq:demand}
+\end{equation}
+\begin{equation}
+  \sum_{j=1}^{n} x_{ijt} \le S_i\,y_{it}, \qquad \forall i,\ t
+  \label{eq:capacity}
+\end{equation}
+\begin{equation}
+  y_{it}\in\{0,1\},\qquad x_{ijt}\ge 0
+  \label{eq:domain}
+\end{equation}
+Equation~\eqref{eq:demand} enforces demand satisfaction, \eqref{eq:capacity} enforces
+capacity, and \eqref{eq:domain} fixes the variable domains.
+
+\subsection{Model II: Optimization}
+
+Present the extended model. For multi-line derivations use \texttt{align}, numbering only
+the lines you need:
+\begin{align}
+  \mathcal{L}(x,y,\lambda,\mu)
+    &= \sum_{i,j,t} c_{ij}x_{ijt} + \sum_{i,t} f_i y_{it}
+       + \sum_{j,t}\lambda_{jt}\Bigl(d_{jt}-\sum_i x_{ijt}\Bigr) \notag \\
+    &\quad + \sum_{i,t}\mu_{it}\Bigl(\sum_j x_{ijt}-S_i y_{it}\Bigr)
+  \label{eq:lagrange}
+\end{align}
+
+\subsection{Solution Algorithm}
+
+Describe the algorithm, its parameters, its convergence criterion, and the computing
+environment. Report the iteration count and the optimality gap.
+
+\section{Results}
+\label{sec:results}
+
+% ★ 图题在图下方：先 \includegraphics（或占位框），再 \caption，最后 \label。
+% ★ 图与表不要重复呈现同一组数据：表 \ref{tab:results} 已经给出各期成本，
+%   就不要再画一张把同一组数字重画一遍的柱状图。
+\begin{figure}[htbp]
+  \centering
+  % ==== 替换为真实图片：\includegraphics[width=0.7\linewidth]{figures/convergence.pdf} ====
+  \framebox[0.7\linewidth]{\rule{0pt}{4.5cm}\makebox[0pt][c]{\small Figure placeholder}}
+  \caption{Convergence of the adaptive large neighborhood search.}
+  \label{fig:convergence}
+\end{figure}
+
+As Figure~\ref{fig:convergence} shows, the objective stabilizes after roughly $1200$
+iterations with a relative gap below $0.5\%$.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Optimal cost and demand satisfaction by period}
+  \label{tab:results}
+  \begin{tabular}{cccc}
+    \toprule
+    \textbf{Period} & \textbf{Cost (CNY)} & \textbf{Satisfaction (\%)} & \textbf{Open nodes} \\
+    \midrule
+    1 & $1.83\times10^{5}$ & 100.0 & 3 \\
+    2 & $1.96\times10^{5}$ & 100.0 & 3 \\
+    3 & $2.11\times10^{5}$ & 100.0 & 4 \\
+    \textbf{Total} & $\bm{2.417\times10^{6}}$ & 100.0 & --- \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Table~\ref{tab:results} reports the period-by-period optima. The number of open nodes
+rises from three to four as demand grows, consistent with economies of scale.
+
+\section{Sensitivity Analysis}
+\label{sec:sensitivity}
+
+% ★ 美赛评阅几乎必然检查灵敏度分析。至少要有一个参数扰动表或图，
+%   并指出"哪个参数最敏感、所以现实中应该优先控制它"。
+We perturb each key parameter by $\pm 10\%$ one at a time and record the relative change
+in the optimal objective.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Sensitivity of the optimal objective (relative change, \%)}
+  \label{tab:sensitivity}
+  \begin{tabular}{lccc}
+    \toprule
+    \textbf{Parameter} & \textbf{$-10\%$} & \textbf{Baseline} & \textbf{$+10\%$} \\
+    \midrule
+    Unit transportation cost $c_{ij}$ & $-11.7$ & $0.00$ & $+12.9$ \\
+    Demand $d_{jt}$                   & $-8.4$  & $0.00$ & $+9.1$  \\
+    Capacity $S_i$                    & $+0.6$  & $0.00$ & $-0.3$  \\
+    Uncertainty width $\alpha$        & $+2.2$  & $0.00$ & $+3.8$  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Table~\ref{tab:sensitivity} shows that the objective is most sensitive to unit
+transportation cost (elasticity about $1.34$) and essentially insensitive to capacity,
+so cost reduction should be prioritized over capacity expansion.
+
+\section{Strengths and Weaknesses}
+\label{sec:strengths}
+
+% ★ 这一节是美赛的特色，必须诚实。弱点要具体，并给出改进方向；
+%   写"本模型没有缺点"会被视为缺乏批判性思考。
+\subsection{Strengths}
+\begin{itemize}
+  \item The framework couples mechanistic constraints with data-driven calibration,
+        so it remains interpretable while capturing nonlinear effects.
+  \item The two-stage solution strategy returns high-quality feasible solutions within
+        a practical time budget.
+  \item Uncertainty is modelled explicitly, so the recommendation does not hinge on a
+        single scenario.
+\end{itemize}
+
+\subsection{Weaknesses}
+\begin{itemize}
+  \item Cross-period dependencies such as supplier learning are not modelled, which may
+        understate the value of long-term contracts.
+  \item The heuristic provides no optimality certificate; the reported gap is empirical.
+  \item The data are spatially aggregated, so intra-node heterogeneity is smoothed out.
+\end{itemize}
+
+\section{Conclusions}
+\label{sec:conclusions}
+
+Summarize what you found, in the same order as the tasks were posed, and give the
+concrete numbers. Then state the most important practical implication in one or two
+sentences. Do not introduce new material here.
+
+% =============================================================================
+% REFERENCES（计入 25 页）
+% -----------------------------------------------------------------------------
+%  ★ Reference list **计入** 25 页上限。
+%  ★ 正文中必须用 \cite{} 引用，且与文献表一一对应。
+%  ★ AI 使用必须透明：凡是使用了 AI 工具，都要在正文内联引用，
+%    并在本参考文献表中列出所有用到的 AI 工具（见文末 Report on Use of AI）。
+% =============================================================================
+\newpage
+\begin{thebibliography}{99}
+  \bibitem{ref1} Giordano F R, Fox W P, Horton S B. A First Course in Mathematical
+                 Modeling[M]. 5th ed. Boston: Cengage Learning, 2014.
+  \bibitem{ref2} Birge J R, Louveaux F. Introduction to Stochastic Programming[M].
+                 2nd ed. New York: Springer, 2011.
+  \bibitem{ref3} Ben-Tal A, El Ghaoui L, Nemirovski A. Robust Optimization[M].
+                 Princeton: Princeton University Press, 2009.
+  \bibitem{ref4} Ropke S, Pisinger D. An adaptive large neighborhood search heuristic
+                 for the pickup and delivery problem with time windows[J].
+                 Transportation Science, 2006, 40(4): 455--472.
+  % ★ 若使用了 AI 工具，请在此逐条列出（示例格式，按当年官方要求调整）：
+  % \bibitem{ai1} OpenAI. ChatGPT (GPT-4o) [Large language model]. 2025.
+  %               https://chat.openai.com
+\end{thebibliography}
+
+% =============================================================================
+% APPENDICES（计入 25 页 —— 与国赛完全相反！）
+% -----------------------------------------------------------------------------
+%  ★★★ 再次强调 ★★★
+%   国赛：附录页数不限，且官方要求放"全部完整可运行的源代码"。
+%   美赛：Appendix、Code、Table of Contents、Reference List **全部计入** 25 页。
+%   因此**不要**把国赛那种长篇代码附录照搬到美赛论文里。
+%   只放评阅人确实需要看的最小内容：关键推导、补充图表、极短的伪代码。
+%  ★ 不要把程序文件、数据文件作为独立附件随论文一起提交
+%    （官方要求只提交一个 PDF）。
+% =============================================================================
+\newpage
+\appendix
+\section{Supporting Derivations}
+\label{app:derivations}
+
+Put only what the reviewer needs; anything optional costs you pages from the 25-page
+budget.
+
+\section{Code Fragment (Optional)}
+\label{app:code}
+
+% ★ 再次提醒：这一段代码**会计入 25 页**。能删就删。
+\begin{lstlisting}[language=Python,caption={Core solver loop (abridged)},label={lst:solver}]
+import numpy as np
+from scipy.optimize import milp, LinearConstraint, Bounds
+
+
+def solve(cost, demand, capacity, fixed_cost):
+    m, n = capacity.shape
+    c = np.concatenate([cost.ravel(), fixed_cost.ravel()])
+    lb = np.zeros(c.size)
+    ub = np.concatenate([np.full(m * n, np.inf), np.ones(m)])
+    A_eq = np.zeros((n, c.size))
+    for j in range(n):
+        A_eq[j, j::n] = 1.0
+    res = milp(c=c,
+               constraints=[LinearConstraint(A_eq, demand, demand)],
+               integrality=np.ones(c.size),
+               bounds=Bounds(lb, ub))
+    return res
+\end{lstlisting}
+
+% =============================================================================
+% REPORT ON USE OF AI
+% -----------------------------------------------------------------------------
+%  ★ 位置：**附在 25 页正文之后**。
+%  ★ 页数：该部分**无页数限制，且不计入 25 页上限**。
+%  ★ 透明性要求：若使用了任何 AI 工具，
+%      (1) 必须在**正文中内联引用**（例如 "we used ChatGPT \cite{ai1} to ..."）；
+%      (2) 必须在此处**列出所有用到的 AI 工具**及其用途；
+%      (3) 必须在 References 中给出对应条目。
+%  ★ 若完全没有使用 AI 工具，也要保留本节并明确声明 "No AI tools were used."
+%    （按当年 Instructions 的措辞要求书写）。
+%  ★ 提醒：本节的页数口径同样可能随年份调整，请以当年官方通知为准。
+% =============================================================================
+\newpage
+\section*{Report on Use of AI}
+\addcontentsline{toc}{section}{Report on Use of AI}
+
+% 若未使用任何 AI 工具，保留下面这一段：
+No generative AI tools were used in the preparation of this report.
+
+% 若使用了 AI 工具，删除上面那段，改用下面这种逐条列出的格式：
+% \begin{itemize}
+%   \item \textbf{Tool:} ChatGPT (GPT-4o), OpenAI. \textbf{Use:} language polishing of
+%         Section~\ref{sec:intro} and code debugging in Appendix~\ref{app:code}.
+%         \textbf{Verification:} all output was reviewed and edited by the team; the
+%         final models, results, and conclusions are our own.
+%   \item \textbf{Tool:} DeepSeek-V3, DeepSeek. \textbf{Use:} literature search
+%         suggestions. \textbf{Verification:} every suggested reference was retrieved
+%         and read by the team before citation.
+% \end{itemize}
+
+\end{document}

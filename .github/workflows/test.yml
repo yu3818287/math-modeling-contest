@@ -1,0 +1,66 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  regression:
+    name: check_paper.py 回归测试
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # pypdf 用于精确页数统计；未安装时校验器会降级为对象计数估算
+      - name: Install optional dependency
+        run: pip install pypdf
+
+      - name: Run regression tests
+        run: python tests/run_tests.py
+
+      # 说明：--compile 需要 XeLaTeX 与中文字体，CI 上配置成本较高，此处不跑。
+      # 需要在本机验证编译与页数统计时执行：python tests/run_tests.py --compile
+
+  validate:
+    name: 技能结构校验
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check SKILL.md frontmatter
+        run: |
+          python - <<'PY'
+          import re, sys, pathlib
+          p = pathlib.Path("SKILL.md")
+          if not p.exists():
+              sys.exit("SKILL.md 不存在")
+          text = p.read_text(encoding="utf-8")
+          m = re.match(r"^---\s*\n(.*?)\n---\s*\n", text, re.DOTALL)
+          if not m:
+              sys.exit("SKILL.md 缺少 YAML frontmatter")
+          fm = m.group(1)
+          for field in ("name", "description"):
+              if not re.search(r"^%s\s*:\s*\S" % field, fm, re.MULTILINE):
+                  sys.exit(f"frontmatter 缺少 {field} 字段")
+          name = re.search(r"^name\s*:\s*(\S+)", fm, re.MULTILINE).group(1)
+          print(f"name = {name}")
+          print("frontmatter OK")
+          PY
+
+      - name: Check required files
+        run: |
+          for f in SKILL.md README.md LICENSE THIRD_PARTY_NOTICES.md \
+                   references/cumcm.md references/mcm.md \
+                   references/verification.md references/anti-hallucination.md \
+                   scripts/check_paper.py scripts/mmfig.py \
+                   assets/mm.mplstyle \
+                   assets/latex/cumcm/main.tex assets/latex/mcm/main.tex; do
+            if [ ! -f "$f" ]; then echo "缺少文件: $f"; exit 1; fi
+          done
+          echo "全部必需文件存在"

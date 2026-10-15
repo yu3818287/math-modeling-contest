@@ -1,0 +1,75 @@
+\documentclass[12pt,a4paper]{ctexart}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\title{基于贪心算法的物流配送路径优化研究}
+\author{某大学 张三}
+\begin{document}
+\maketitle
+\tableofcontents
+
+\begin{abstract}
+本文针对物流配送路径优化问题进行了研究。本次实验在 XX 大学完成。
+我们建立了贪心算法模型，求得最优总成本为 1284500 元。
+结果的平均相对误差为 4.7\%，迭代次数为 3500 次。
+另外我们发现节约里程比例为 23.8\%，这个数值是随口写的。
+\end{abstract}
+
+\noindent\textbf{关键词：} 路径优化；贪心算法；物流配送
+
+\section{问题重述}
+本文需要解决三个问题。常见的方法有遗传算法、模拟退火和蚁群算法。
+
+\section{模型假设}
+数据真实有效；不考虑突发干扰因素。
+
+\section{模型的建立与求解}
+根据上式，我们可以得到目标函数。设参数 $k=0.5$。
+\begin{equation}
+\min Z = \sum_{i=1}^{n} c_i x_i
+\label{eq:obj}
+\end{equation}
+由式 \eqref{eq:obj} 可得最优解为 1284500 元。
+
+\begin{table}[htbp]
+\centering
+\caption{各方案成本对比}
+\begin{tabular}{|l|c|r|}
+\hline
+方案 & 成本 & 占比 \\
+\hline
+A & 1284500 & 45.2\% \\
+B & 980000 & 34.5\% \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{../figures/fig_cost.png}
+\end{figure}
+
+\section{结果分析}
+从表中可以看出，方案 A 的成本最高。
+
+\section{模型检验}
+我们对模型进行了误差分析。
+
+\section{模型的优缺点与改进}
+优点是计算简便。
+
+\section{结论}
+本文模型具有较高的实用价值。
+
+\begin{thebibliography}{9}
+\bibitem{ref1} 张三. 物流配送研究[J]. 某某学报, 2020.
+\end{thebibliography}
+
+\appendix
+\section{附录}
+本论文没有用到程序。
+
+\end{document}
