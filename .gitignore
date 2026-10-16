@@ -19,7 +19,7 @@
 *.bcf
 *.run.xml
 
-# ---- Python ----
+# ---- Python 方面 ----
 __pycache__/
 *.py[cod]
 *.egg-info/
