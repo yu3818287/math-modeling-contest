@@ -1,6 +1,6 @@
 # Changelog
 
-本文件记录本技能的版本变更。格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)。
+本文件记录本技能的版本变更。格式参考为 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)。
 
 ## [0.1.0] - 2026-10-15
 
